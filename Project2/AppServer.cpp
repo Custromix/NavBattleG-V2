@@ -1,6 +1,5 @@
 ﻿#include "Utils.h"
 
-//LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
@@ -10,7 +9,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = WndProc;
+    wc.lpfnWndProc = MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;
@@ -68,20 +67,4 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 }
 /****************************************************************************/
 
-//LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-//{
-//    std::cout << "de";
-//    switch (uMsg)
-//    {
-//    case WM_CREATE:
-//
-//        return 0;
-//
-//    case WM_DESTROY:
-//        PostQuitMessage(0);
-//        return 0;
-//
-//    default:
-//        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-//    }
-//}
+

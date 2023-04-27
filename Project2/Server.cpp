@@ -124,10 +124,36 @@ bool Server::Play()
     return true;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch (msg)
+    std::cout << "de";
+    switch (uMsg)
     {
+    case WM_CREATE:
+    {
+        return 0;
+    }
+    case WM_DESTROY:
+    {
+        PostQuitMessage(0);
+        return 0;
+    }
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+}
+
+LRESULT CALLBACK WndPdroc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    std::cout << "Enter WindProc : " << std::endl;
+
+    switch (uMsg)
+    {
+    case WM_CREATE:
+    {
+        return 0;
+    }
     case WM_SOCKET:
     {
         if (WSAGETSELECTERROR(lParam)) {
@@ -174,10 +200,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
 
     default:
-        return DefWindowProc(hwnd, msg, wParam, lParam);
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
 
     }
-    return 0;
 }
 
 bool Server::Join(SClient* joiningClient)
@@ -238,6 +263,7 @@ bool Server::Listen()
     if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
         throw std::runtime_error("Erreur lors de la mise en mode écoute du socket : " + WSAGetLastError());
         StopServer();
+        std::cout << "Le serveur estzdzdzd : " << std::endl;
     }
     else
         std::cout << "Le serveur est à l'écoute sur le port : " << serverAddr.sin_port << std::endl;

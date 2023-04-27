@@ -64,6 +64,4 @@ private:
 };
 
 
-
-
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
