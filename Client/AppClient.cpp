@@ -39,10 +39,17 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 
     std::cout << "Hello, world!" << std::endl;
 
+    App* BATTLENAVALMUTLI = new App();
+
+    SetApp(BATTLENAVALMUTLI);
+
     try {
         CClient* cli = new CClient(hwnd);
 
         cli->Connect("127.0.0.1", "27523");
+
+        BATTLENAVALMUTLI->Init();
+        BATTLENAVALMUTLI->Start();
 
         //cli->Main();
 
