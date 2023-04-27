@@ -61,6 +61,7 @@ private:
 	char* status;
 	std::vector<sf::FloatRect> gridSquare;
 	std::array<std::array<int, 10>, 10> userGridArray;
+	std::string griddata;
 public:
 	//Sur le client
 	Board();

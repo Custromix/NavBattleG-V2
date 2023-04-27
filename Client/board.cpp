@@ -54,12 +54,16 @@ void Board::init()
 //Sur le client
 void Board::setUserGrid()
 {
+	
 	for (int line = 0; line < userGridArray.size(); line++)
 	{
 		for (int row = 0; row < userGridArray.size(); row++)
 		{
 			userGridArray[line][row] = EMPTY;
+			griddata += "0";
+			printf("%d", userGridArray[line][row]);
 		}
+		printf("\n");
 	}
 }
 //Sur le client
@@ -86,6 +90,7 @@ void Board::readUserGridInfo(sf::RenderWindow& window, Boat& boat)
 				positionY = line * TILESIZE + USERGRID_OFFSET_Y;
 				boat.destroyed(window, positionX, positionY);
 			}
+
 		}
 	}
 }

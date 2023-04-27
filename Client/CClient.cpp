@@ -16,10 +16,6 @@ CClient::CClient(HWND window)
     }
 }
 
-CClient::~CClient()
-{
-}
-
 bool CClient::Connect(const char ip[], const char port[])
 {
     struct addrinfo* result = NULL;
@@ -83,6 +79,7 @@ void CClient::Main()
             int num_bytes_received = recv(clientSocket, &buffer[0], buffer.size(), 0);
             if (num_bytes_received == SOCKET_ERROR) {
             }
+            
             else {
                 std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
             }
