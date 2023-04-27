@@ -1,16 +1,28 @@
-// header.h : include file for standard system include files,
-// or project specific include files
-//
-
 #pragma once
 
 #include "targetver.h"
-#define WIN32_LEAN_AND_MEAN     
-// Windows Header Files
+#define WIN32_LEAN_AND_MEAN    
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #include <iostream>
+#include <string>
+#include <winsock2.h>
 #include <windows.h>
-// C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <sstream>
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <map>
+
+#pragma comment(lib, "ws2_32.lib")
+
+#define WM_SOCKET (WM_USER + 1)
+
+#include "SCResult.h"
+#include "SClient.h"
+#include "GameManager.h"
+#include "Server.h"

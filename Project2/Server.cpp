@@ -1,9 +1,10 @@
-﻿#include "Utils.h"
+﻿#include "Sframework.h"
 
 Server::Server(int port, HWND window)
 {
     window_ = window;
     statusServ = ServerStatus::WAITING;
+    pGame = new GameManager();
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         throw std::runtime_error("WSAStartup a échoué avec l'erreur : " + WSAGetLastError());
@@ -36,17 +37,63 @@ Server::~Server()
 {
 }
 
+
 void Server::InitCommand() 
 {
     command["server:start"] = 1;
     command["server:stop"] = 0;
 }
 
-
 void Server::StopServer()
 {
     closesocket(serverSocket);
     WSACleanup();
+}
+
+bool Server::Listen()
+{
+    currentCommand = "";
+
+    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
+        throw std::runtime_error("Erreur lors de la mise en mode écoute du socket : " + WSAGetLastError());
+        StopServer();
+        std::cout << "Le serveur estzdzdzd : " << std::endl;
+    }
+    else
+        std::cout << "Le serveur est à l'écoute sur le port : " << serverAddr.sin_port << std::endl;
+    return true;
+
+}
+
+CResult<int>* Server::IsExist(SClient* client)
+{
+    CResult<int>* result = new CResult<int>(false);
+
+    if (client == nullptr) {
+        throw std::invalid_argument("Client pointer is null.");
+    }
+
+    for (int i = 0; i < clients.size(); i++) {
+        if (clients[i] == client) {
+            result->SetSatue(true);
+            result->SetValue(i);
+            return result;
+        }
+    }
+
+    return result;
+}
+
+bool Server::Join(SClient* joiningClient)
+{
+    if (!IsExist(joiningClient)->GetStatus())
+    {
+        clients.push_back(joiningClient);
+        return true;
+    }
+    else
+        return false;
+
 }
 
 bool Server::Connect(WPARAM wParam, HWND window)
@@ -60,113 +107,99 @@ bool Server::Connect(WPARAM wParam, HWND window)
     if ((clientSocket = accept(wParam, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
         SClient* player = new SClient(clientSocket, clientAddr, window);
         if (Join(player)) 
-        {
-            numberOfClient++;
-            OutputDebugStringA("Client connecté !");
-           
-        }
+            numberOfClient++;           
 
     }
     return true;
 }
 
-void Server::Start() 
+std::vector<std::string>* Server::Parser(std::string ProtocolMessage)
 {
-    //do 
-    //{
-    //    switch (statusServ)
-    //    {
-    //    case WAITING:
-    //        if (Waiting(2))
-    //            statusServ = PLAY;
-    //        break;
+    std::istringstream ss(ProtocolMessage);
+    std::string token;
+    std::vector<std::string> tokens;
 
-    //    case PLAY:
-    //        if (Play())
-    //            statusServ = STOP;
-    //        break;
+    while (std::getline(ss, token, ':'))
+    {
+        tokens.push_back(token);
+    }
 
-    //    default:
-    //        //std::cout << "Default" << std::endl;
-    //        break;
-    //    }
+    return &tokens;
 
-    //} while (statusServ != STOP);
-    
-
-    
 }
 
-bool Server::Play()
+bool Server::ProtocolExecuter(std::vector<std::string>* tokens)
 {
-    bool endGame = false;
-    do {
-
-        /*** EXAMPLE MODIFIER TOUT CE QU'IL Y A DANS LA BOUCLE DO POUR LE JEU ***/
-
-        std::cout << "Envoie des données ! " << std::endl;
-
-        SendToClient(clients[0], "Ta grands mère la prostitué");
-        SendToClient(clients[1], "Réveilles toi PD");
-
-        ReceiveFromClient(clients[0]);
-        ReceiveFromClient(clients[1]);
+    return false;
+}
 
 
-        /*** JUSQU'A LÀ ***/
 
+std::string Server::ReceiveFromClient(SClient* emitter)
+{
+    std::string buffer(1024, 0);
+    int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
 
-        endGame = true;
+    if (num_bytes_received != SOCKET_ERROR)
+    {
+        std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
+        return buffer;
+    }
 
-    } while (endGame != true);
-
-    return true;
+    return "NULL";
 }
 
 LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     SOCKET Accept;
 
-    switch(uMsg)
-
+    switch (uMsg)
     {
 
         case WM_PAINT:
-
+        {
             break;
+        }
 
         case WM_SOCKET:
+        {
+            Server* pServer = (Server*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
             if (WSAGETSELECTERROR(lParam))
             {
-                closesocket( (SOCKET) wParam);
+                closesocket((SOCKET)wParam);
                 break;
             }
 
             // Determine what event occurred on the socket
 
-            switch(WSAGETSELECTEVENT(lParam))
+            switch (WSAGETSELECTEVENT(lParam))
             {
                 case FD_ACCEPT:
                 {
-                    Server* pServer = (Server*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-                    OutputDebugStringA("GrosZgeg");
-
-                    if (pServer->Connect(wParam, hwnd)) {
-
+                    if (pServer->GetClients()->size() < pServer->GetSlot())
+                    {
+                        if (pServer->Connect(wParam, hwnd)) {
+                            OutputDebugStringA("Client connecté ! \n");
+                        }
                     }
-                    // Accept an incoming connection
-                    Accept = accept(wParam, NULL, NULL);
-
-                    // Prepare accepted socket for read, write, and close notification
-
-                    //WSAAsyncSelect(Accept, hDlg, WM_SOCKET, FD_READ │ FD_WRITE │ FD_CLOSE);
 
                     break;
                 }
                 case FD_READ:
                 {
+
+                    SClient* emitter = (SClient*)lParam;
+
+                    std::string buffer(1024, 0);
+                    int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
+
+                    if (num_bytes_received != SOCKET_ERROR)
+                    {
+                        pServer->ProtocolExecuter(pServer->Parser(buffer));
+                    }
+
                     // Receive data from the socket in wParam
 
                     break;
@@ -177,7 +210,7 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
                     break;
 
                 }
-                case FD_CLOSE:   
+                case FD_CLOSE:
                 {
                     // The connection is now closed
 
@@ -188,15 +221,24 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
             }
 
             break;
-
+        }
+        case WM_CLOSE:
+        {
+            DestroyWindow(hwnd);
+            return 0;
+        }
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            return 0;
+        }
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
-
-    return TRUE;
 }
 
 LRESULT CALLBACK WndPdroc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    std::cout << "Enter WindProc : " << std::endl;
 
     switch (uMsg)
     {
@@ -256,17 +298,7 @@ LRESULT CALLBACK WndPdroc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-bool Server::Join(SClient* joiningClient)
-{
-	if (!IsExist(joiningClient)->GetStatus())
-	{
-		clients.push_back(joiningClient);
-        return true;
-    }
-    else
-        return false;
-    
-}
+
 
 void Server::Leave(SClient* leavingClient)
 {
@@ -276,24 +308,7 @@ void Server::Leave(SClient* leavingClient)
 	}
 }
 
-CResult<int>* Server::IsExist(SClient* client)
-{
-    CResult<int>* result = new CResult<int>(false);
 
-    if (client == nullptr) {
-        throw std::invalid_argument("Client pointer is null.");
-    }
-
-    for (int i = 0; i < clients.size(); i++) {
-        if (clients[i] == client) {
-            result->SetSatue(true);
-            result->SetValue(i);
-            return result;
-        }
-    }
-
-    return result;
-}
 
 bool Server::DeleteUsers(SClient* client)
 {
@@ -307,20 +322,7 @@ bool Server::DeleteUsers(SClient* client)
         return false;
 }
 
-bool Server::Listen()
-{
-    currentCommand = "";
 
-    if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-        throw std::runtime_error("Erreur lors de la mise en mode écoute du socket : " + WSAGetLastError());
-        StopServer();
-        std::cout << "Le serveur estzdzdzd : " << std::endl;
-    }
-    else
-        std::cout << "Le serveur est à l'écoute sur le port : " << serverAddr.sin_port << std::endl;
-    return true;
-
-}
 
 void Server::SendToClient(SClient* receiver, std::string message)
 {
@@ -331,43 +333,9 @@ void Server::SendToClient(SClient* receiver, std::string message)
     }
     else
         std::cout << "Données pas envoyé : " << std::endl;
-
-    /*
-    if (WSAAsyncSelect(*receiver->GetSocket(), window_, WM_SOCKET, FD_READ) != SOCKET_ERROR)
-    {
-        std::string buffer(1024, 0);
-        int num_bytes_received = recv(*receiver->GetSocket(), &buffer[0], buffer.size(), 0);
-
-        if (num_bytes_received != SOCKET_ERROR)
-        {
-            std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
-
-            
-
-        }
-    }*/
 }
 
-std::string Server::ReceiveFromClient(SClient* emitter)
-{
-  /*  if (WSAAsyncSelect(*emitter->GetSocket(), window_, WM_SOCKET, FD_READ ) != SOCKET_ERROR)
-    {
-        std::string buffer(1024, 0);
-        int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
 
-        if (num_bytes_received != SOCKET_ERROR)
-        {
-            std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
-            return buffer;
-        }
-
-        return "NULL";
-    }
-
-    return "";*/
-
-    return "";
-}
 
 bool Server::Clear()
 {

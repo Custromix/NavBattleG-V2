@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="SClient.h" />
     <ClInclude Include="SCResult.h" />
     <ClInclude Include="Sframework.h" />
@@ -141,14 +142,13 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="SClient.cpp" />
     <ClCompile Include="SResult.cpp" />
     <ClCompile Include="AppServer.cpp" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project2.rc" />

@@ -1,4 +1,4 @@
-#include "Utils.h"
+#include "Sframework.h"
 
 SClient::SClient()
 {
@@ -10,7 +10,7 @@ SClient::SClient(SOCKET clientSocket, sockaddr_in clientAddr, HWND window)
 	clientAddr_ = clientAddr;
 	clientAddrSize_ = sizeof(clientAddr_);
 
-	WSAAsyncSelect(clientSocket, window, WM_SOCKET, FD_READ);
+	WSAAsyncSelect(clientSocket, window, WM_SOCKET, FD_READ | FD_WRITE | FD_CLOSE);
 }
 
 SClient::~SClient()
