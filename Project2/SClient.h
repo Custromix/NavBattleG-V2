@@ -7,6 +7,7 @@ private:
     sockaddr_in clientAddr_;
     int clientAddrSize_;
 
+
 public:
 
     SClient();

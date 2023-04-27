@@ -73,6 +73,7 @@ private:
 
 	GameManager* pGame;
 
+	QueueMessageManager* pQMM;
 
 };
 

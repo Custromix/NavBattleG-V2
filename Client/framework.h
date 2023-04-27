@@ -19,12 +19,15 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <queue>
+#include <mutex>
 
 
 #pragma comment(lib, "ws2_32.lib")
 
 #define WM_SOCKET (WM_USER + 1)
 
+#include "QueueMessageManager.h"
 #include "CClient.h"
 
 

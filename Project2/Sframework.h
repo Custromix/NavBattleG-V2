@@ -17,6 +17,8 @@
 #include <array>
 #include <algorithm>
 #include <map>
+#include <queue>
+#include <mutex>
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -24,5 +26,7 @@
 
 #include "SCResult.h"
 #include "SClient.h"
+#include "SMessage.h"
+#include "QueueMessageManager.h"
 #include "GameManager.h"
 #include "Server.h"

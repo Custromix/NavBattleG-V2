@@ -135,17 +135,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="QueueMessageManager.h" />
     <ClInclude Include="SClient.h" />
     <ClInclude Include="SCResult.h" />
     <ClInclude Include="Sframework.h" />
     <ClInclude Include="Project2.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="SMessage.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="QueueMessageManager.cpp" />
     <ClCompile Include="SClient.cpp" />
+    <ClCompile Include="SMessage.cpp" />
     <ClCompile Include="SResult.cpp" />
     <ClCompile Include="AppServer.cpp" />
     <ClCompile Include="Server.cpp" />

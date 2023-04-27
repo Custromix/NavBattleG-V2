@@ -5,6 +5,7 @@ Server::Server(int port, HWND window)
     window_ = window;
     statusServ = ServerStatus::WAITING;
     pGame = new GameManager();
+    pQMM = new QueueMessageManager();
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         throw std::runtime_error("WSAStartup a échoué avec l'erreur : " + WSAGetLastError());
@@ -130,23 +131,18 @@ std::vector<std::string>* Server::Parser(std::string ProtocolMessage)
 
 bool Server::ProtocolExecuter(std::vector<std::string>* tokens)
 {
+    pQMM->EnqueueMessage("MISS", clients[0]);
+
     return false;
 }
 
-
-std::string Server::ReceiveFromClient(SClient* emitter)
+void Server::SendToClient(SClient* receiver, std::string message)
 {
-    std::string buffer(1024, 0);
-    int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
-
-    if (num_bytes_received != SOCKET_ERROR)
-    {
-        std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
-        return buffer;
+    if (send(*receiver->GetSocket(), message.c_str(), message.length(), 0)) {
     }
-
-    return "NULL";
+    
 }
+
 
 LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -176,9 +172,6 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
             {
                 case FD_ACCEPT:
                 {                            
-                    OutputDebugStringA("Client fff ! \n");
-
-
 
                     if (pServer->GetClients()->size() < pServer->GetSlot())
                     {
@@ -186,8 +179,6 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
                             OutputDebugStringA("Client connecté ! \n");
                         }
                     }
-
-                    MessageBoxA(hwnd, "dada", "dad", NULL);
 
                     break;
                 }
@@ -211,6 +202,13 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
                 }
                 case FD_WRITE:
                 {
+                    if (!pServer->pQMM->IsEmpty()) 
+                    {
+                        OutputDebugStringA("SEND MESSAGE \n");
+                        SMessage message = pServer->pQMM->DequeueMessage();
+                        pServer->SendToClient(message.GetClient(), message.GetSMessage());
+                    }
+
                     // The socket in wParam is ready for sending data
                     break;
 
@@ -329,16 +327,6 @@ bool Server::DeleteUsers(SClient* client)
 
 
 
-void Server::SendToClient(SClient* receiver, std::string message)
-{
-
-    if (send(*receiver->GetSocket(), message.c_str(), message.length(), 0)) {
-        std::cout << "Données envoyées : " << message << std::endl;
-        //satusServ = STOP;
-    }
-    else
-        std::cout << "Données pas envoyé : " << std::endl;
-}
 
 
 
