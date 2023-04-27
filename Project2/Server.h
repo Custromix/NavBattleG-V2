@@ -11,6 +11,8 @@ public:
 
 	void StopServer();
 
+	bool Connect(WPARAM wParam, HWND window);
+
 	bool Waiting(int clientMax);
 
 	void Start();
@@ -33,6 +35,7 @@ public:
 
 	bool Clear();
 
+	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 
 
 	std::vector<SClient*> GetClients() { return clients; }
@@ -44,6 +47,9 @@ public:
 		STOP
 	};
 
+
+	SOCKET* GetServerSocket() { return &serverSocket; }
+	HWND* GetWindow() { return &window_; }
 
 private:
 	std::vector<SClient*> clients;
@@ -64,4 +70,3 @@ private:
 };
 
 
-LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);

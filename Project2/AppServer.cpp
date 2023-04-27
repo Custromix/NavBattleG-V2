@@ -9,7 +9,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = MainWndProc;
+    wc.lpfnWndProc = Server::MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;
@@ -30,13 +30,6 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     UpdateWindow(hwnd);
 
 
-    // Allouer une console
-    AllocConsole();
-
-    // Rediriger la sortie standard vers la console
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-
-    std::cout << "Hello, world!" << std::endl;
 
     try {
         Server* g_server = new Server(257523, hwnd);
@@ -54,9 +47,6 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
         std::cout << "Exception : " << e.what() << std::endl;
     }
 
-
-    // Fermer la console
-    FreeConsole();
 
     while (GetMessage(&msg, NULL, 0, 0))
     {

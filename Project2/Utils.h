@@ -19,7 +19,6 @@
 #include <algorithm>
 #include <map>
 
-
 #pragma comment(lib, "ws2_32.lib")
 
 #define WM_SOCKET (WM_USER + 1)

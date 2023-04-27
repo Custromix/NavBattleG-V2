@@ -25,6 +25,9 @@ Server::Server(int port, HWND window)
         WSACleanup();
     }
 
+    WSAAsyncSelect(serverSocket, window, WM_SOCKET, FD_ACCEPT | FD_CLOSE);
+
+    SetWindowLongPtr(window, GWLP_USERDATA, (LONG_PTR)this);
 
     InitCommand();
 }
@@ -46,7 +49,7 @@ void Server::StopServer()
     WSACleanup();
 }
 
-bool Server::Waiting(int clientMax)
+bool Server::Connect(WPARAM wParam, HWND window)
 {
     SOCKET clientSocket;
     sockaddr_in clientAddr;
@@ -54,45 +57,41 @@ bool Server::Waiting(int clientMax)
 
     int numberOfClient = 0;
 
-    while(numberOfClient < clientMax)
-    {
-        std::cout << "En attente" << std::endl;
-
-        if ((clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
-            std::cout << "Client connecté" << std::endl;
-            SClient* player = new SClient(clientSocket, clientAddr, window_);
-            if (Join(player)) 
-                numberOfClient++;
-            std::cout << "Il manque " << clientMax - numberOfClient << " joueurs !" << std::endl;
-
+    if ((clientSocket = accept(wParam, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
+        SClient* player = new SClient(clientSocket, clientAddr, window);
+        if (Join(player)) 
+        {
+            numberOfClient++;
+            OutputDebugStringA("Client connecté !");
+           
         }
+
     }
-    
     return true;
 }
 
 void Server::Start() 
 {
-    do 
-    {
-        switch (statusServ)
-        {
-        case WAITING:
-            if (Waiting(2))
-                statusServ = PLAY;
-            break;
+    //do 
+    //{
+    //    switch (statusServ)
+    //    {
+    //    case WAITING:
+    //        if (Waiting(2))
+    //            statusServ = PLAY;
+    //        break;
 
-        case PLAY:
-            if (Play())
-                statusServ = STOP;
-            break;
+    //    case PLAY:
+    //        if (Play())
+    //            statusServ = STOP;
+    //        break;
 
-        default:
-            //std::cout << "Default" << std::endl;
-            break;
-        }
+    //    default:
+    //        //std::cout << "Default" << std::endl;
+    //        break;
+    //    }
 
-    } while (statusServ != STOP);
+    //} while (statusServ != STOP);
     
 
     
@@ -124,24 +123,75 @@ bool Server::Play()
     return true;
 }
 
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    std::cout << "de";
-    switch (uMsg)
+    SOCKET Accept;
+
+    switch(uMsg)
+
     {
-    case WM_CREATE:
-    {
-        return 0;
-    }
-    case WM_DESTROY:
-    {
-        PostQuitMessage(0);
-        return 0;
+
+        case WM_PAINT:
+
+            break;
+
+        case WM_SOCKET:
+
+            if (WSAGETSELECTERROR(lParam))
+            {
+                closesocket( (SOCKET) wParam);
+                break;
+            }
+
+            // Determine what event occurred on the socket
+
+            switch(WSAGETSELECTEVENT(lParam))
+            {
+                case FD_ACCEPT:
+                {
+                    Server* pServer = (Server*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+                    OutputDebugStringA("GrosZgeg");
+
+                    if (pServer->Connect(wParam, hwnd)) {
+
+                    }
+                    // Accept an incoming connection
+                    Accept = accept(wParam, NULL, NULL);
+
+                    // Prepare accepted socket for read, write, and close notification
+
+                    //WSAAsyncSelect(Accept, hDlg, WM_SOCKET, FD_READ │ FD_WRITE │ FD_CLOSE);
+
+                    break;
+                }
+                case FD_READ:
+                {
+                    // Receive data from the socket in wParam
+
+                    break;
+                }
+                case FD_WRITE:
+                {
+                    // The socket in wParam is ready for sending data
+                    break;
+
+                }
+                case FD_CLOSE:   
+                {
+                    // The connection is now closed
+
+                    closesocket((SOCKET)wParam);
+
+                    break;
+                }
+            }
+
+            break;
+
     }
 
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
+    return TRUE;
 }
 
 LRESULT CALLBACK WndPdroc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -163,6 +213,7 @@ LRESULT CALLBACK WndPdroc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             switch (WSAGETSELECTEVENT(lParam)) {
             case FD_ACCEPT:
             {
+
 
                 break;
             }
