@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = MainWndProc;
+    wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;

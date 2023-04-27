@@ -240,23 +240,6 @@ bool Server::Listen()
 
 }
 
-void Server::ListenCommand(int command)
-{
-    switch (command)
-    {
-    case 0:
-        break;
-
-    case 1:
-        statusServ = PLAY;
-        Start();
-        break;
-
-    default:
-        break;
-    }
-}
-
 void Server::SendToClient(SClient* receiver, std::string message)
 {
 
@@ -285,7 +268,7 @@ void Server::SendToClient(SClient* receiver, std::string message)
 
 std::string Server::ReceiveFromClient(SClient* emitter)
 {
-    if (WSAAsyncSelect(*emitter->GetSocket(), window_, WM_SOCKET, FD_READ) != SOCKET_ERROR)
+  /*  if (WSAAsyncSelect(*emitter->GetSocket(), window_, WM_SOCKET, FD_READ ) != SOCKET_ERROR)
     {
         std::string buffer(1024, 0);
         int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
@@ -299,7 +282,7 @@ std::string Server::ReceiveFromClient(SClient* emitter)
         return "NULL";
     }
 
-    return "";
+    return "";*/
 }
 
 bool Server::Clear()

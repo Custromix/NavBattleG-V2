@@ -6,6 +6,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <map>
 

@@ -10,7 +10,7 @@ private:
 public:
 
     SClient();
-    SClient(SOCKET clientSocket, sockaddr_in clientAddr);
+    SClient(SOCKET clientSocket, sockaddr_in clientAddr, HWND window);
 
     ~SClient();
 

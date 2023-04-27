@@ -44,9 +44,9 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 
         g_server->Listen();
 
-        g_server->Start();
+        /*g_server->Start();
 
-        g_server->Clear();
+        g_server->Clear();*/
 
     }
     catch (const std::exception& e) {
