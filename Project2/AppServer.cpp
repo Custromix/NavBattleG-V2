@@ -1,6 +1,5 @@
-﻿#include "Utils.h"
+﻿#include "Sframework.h"
 
-LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
@@ -10,7 +9,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = MainWndProc;
+    wc.lpfnWndProc = Server::MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;
@@ -31,22 +30,15 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     UpdateWindow(hwnd);
 
 
-    // Allouer une console
-    AllocConsole();
-
-    // Rediriger la sortie standard vers la console
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-
-    std::cout << "Hello, world!" << std::endl;
 
     try {
         Server* g_server = new Server(257523, hwnd);
 
         g_server->Listen();
 
-        g_server->Start();
+        /*g_server->Start();
 
-        g_server->Clear();
+        g_server->Clear();*/
 
     }
     catch (const std::exception& e) {
@@ -55,9 +47,6 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
         std::cout << "Exception : " << e.what() << std::endl;
     }
 
-
-    // Fermer la console
-    FreeConsole();
 
     while (GetMessage(&msg, NULL, 0, 0))
     {
@@ -68,19 +57,4 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 }
 /****************************************************************************/
 
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_CREATE:
 
-        return 0;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
-}

@@ -11,7 +11,9 @@ public:
 
 	void StopServer();
 
-	bool Waiting(int clientMax);
+	bool Connect(WPARAM wParam, HWND window);
+
+	std::vector<std::string>* Parser(std::string ProtocolMessage);
 
 	void Start();
 
@@ -29,13 +31,16 @@ public:
 
 	void SendToClient(SClient* receiver, std::string message);
 
+	bool ProtocolExecuter(std::vector<std::string>* tokens);
+
 	std::string ReceiveFromClient(SClient* receiver);
 
 	bool Clear();
 
+	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-	std::vector<SClient*> GetClients() { return clients; }
+	std::vector<SClient*>* GetClients() { return &clients; }
 
 	enum ServerStatus
 	{
@@ -44,6 +49,12 @@ public:
 		STOP
 	};
 
+
+	SOCKET* GetServerSocket() { return &serverSocket; }
+	HWND* GetWindow() { return &window_; }
+
+	int GetSlot() { return slot_; }
+	void SetSlot(int slot) { slot_ = slot; }
 
 private:
 	std::vector<SClient*> clients;
@@ -58,10 +69,11 @@ private:
 
 	ServerStatus statusServ;
 
+	int slot_;
 
+	GameManager* pGame;
 
 
 };
-
 
 
