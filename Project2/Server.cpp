@@ -60,7 +60,7 @@ bool Server::Waiting(int clientMax)
 
         if ((clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
             std::cout << "Client connecté" << std::endl;
-            SClient* player = new SClient(clientSocket, clientAddr);
+            SClient* player = new SClient(clientSocket, clientAddr, window_);
             if (Join(player)) 
                 numberOfClient++;
             std::cout << "Il manque " << clientMax - numberOfClient << " joueurs !" << std::endl;
@@ -135,6 +135,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
         else {
             switch (WSAGETSELECTEVENT(lParam)) {
+            case FD_ACCEPT:
+            {
+
+                break;
+            }
             case FD_READ:
             {
                 char buffer[1024];
@@ -283,6 +288,8 @@ std::string Server::ReceiveFromClient(SClient* emitter)
     }
 
     return "";*/
+
+    return "";
 }
 
 bool Server::Clear()

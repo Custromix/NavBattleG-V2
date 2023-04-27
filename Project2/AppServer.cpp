@@ -1,6 +1,6 @@
 ﻿#include "Utils.h"
 
-LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+//LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = MainWndProc;
+    wc.lpfnWndProc = WndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;
@@ -68,19 +68,20 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
 }
 /****************************************************************************/
 
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_CREATE:
-
-        return 0;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
-}
+//LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+//{
+//    std::cout << "de";
+//    switch (uMsg)
+//    {
+//    case WM_CREATE:
+//
+//        return 0;
+//
+//    case WM_DESTROY:
+//        PostQuitMessage(0);
+//        return 0;
+//
+//    default:
+//        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+//    }
+//}
