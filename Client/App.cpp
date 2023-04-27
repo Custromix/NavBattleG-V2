@@ -1,5 +1,6 @@
 #include "Framework.h"
 
+//Tous dans le client
 App::App()
 {
 	m_sysTime = timeGetTime();

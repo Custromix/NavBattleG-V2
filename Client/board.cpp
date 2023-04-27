@@ -1,5 +1,5 @@
 #include "Framework.h"
-
+//Sur le client
 Board::Board() :USERGRID_X(50), USERGRID_Y(150), SENSOR_SIZE(16), COMPUTERGRID_X(650), COMPUTERGRID_Y(150), USERGRID_OFFSET_X(50), USERGRID_OFFSET_Y(155), MAX_CASE(9), MAX_ROTATION(2), GRID_SIZE(320), TILESIZE(32), GAMESPEED(1.00), EMPTY(0), FILLED(1), DESTROYED(2), PLAYED(3), LEFT(0), RIGHT(1), UP(2), DOWN(3), NONE(-1), N(1)
 
 {
@@ -34,7 +34,7 @@ Board::Board() :USERGRID_X(50), USERGRID_Y(150), SENSOR_SIZE(16), COMPUTERGRID_X
 	touched = false;
 	count = 0;
 }
-
+ //Sur le Client
 void Board::init()
 {	/* BACKGROUND */
 	backgroundTexture.loadFromFile("Resources/Background.png");
@@ -51,6 +51,7 @@ void Board::init()
 	grid.width = GRID_SIZE;
 }
 
+//Sur le client
 void Board::setUserGrid()
 {
 	for (int line = 0; line < userGridArray.size(); line++)
@@ -61,7 +62,7 @@ void Board::setUserGrid()
 		}
 	}
 }
-
+//Sur le client
 void Board::readUserGridInfo(sf::RenderWindow& window, Boat& boat)
 {
 	for (int line = 0; line < userGridArray.size(); line++)
@@ -88,7 +89,7 @@ void Board::readUserGridInfo(sf::RenderWindow& window, Boat& boat)
 		}
 	}
 }
-
+//Sur le client
 void Board::addSensorsToGrid()
 {
 	for (int i = 0; i < MAX_CASE * MAX_CASE; i++)
@@ -105,6 +106,7 @@ void Board::addSensorsToGrid()
 	}
 }
 
+//Sur le client
 void Board::detectBoatOnGrid(Boat& boat)
 { // CHECK BOAT WITH SENSORS TO DEFINE EACH POSITIONS
 
@@ -120,7 +122,7 @@ void Board::detectBoatOnGrid(Boat& boat)
 		}
 	}
 }
-
+//Sur le client
 void Board::setBoatOnGrid(int& idx, const int& status)
 { // TRANSFORM INDEX TO 2D ARRAY VALUES
 	x = 0;
@@ -142,7 +144,7 @@ void Board::setBoatOnGrid(int& idx, const int& status)
 		}
 	}
 }
-
+//Sur le client
 int Board::getBoatInfo()
 { // COUNT EACH BOAT ON THE USER GRID
 	count = 0;
@@ -162,12 +164,15 @@ int Board::getBoatInfo()
 	return count;
 }
 
+//Sur le serv
 bool Board::checkBoatOnGrid()
 {
 	if (boatOnGrid > -1) { return true; }
 	else { return false; }
 }
 
+
+//Sur le serv
 /* COLOR FLOATRECT */
 std::vector<sf::RectangleShape> coloredBox;
 void Board::addBoxToSquare(sf::RenderWindow& win)
@@ -184,7 +189,7 @@ void Board::addBoxToSquare(sf::RenderWindow& win)
 		win.draw(coloredBox[i]);
 	}
 }
-
+//Sur le client
 void Board::updateEvent(sf::RenderWindow& win, sf::Event& event, Boat& boat)
 {
 	// MOUSE EVENT TO SELECT AND MOVE BOARD
@@ -200,12 +205,12 @@ void Board::updateEvent(sf::RenderWindow& win, sf::Event& event, Boat& boat)
 		}
 	}
 }
-
+//Sur le client
 void Board::messageBox(const char* str)
 {
 	text.setString(str);
 }
-
+//Sur le serv
 bool Board::checkAdjacentCase(int& x, int& y)
 {
 	if (axe == NONE) {
@@ -227,12 +232,14 @@ bool Board::checkAdjacentCase(int& x, int& y)
 	return false;
 }
 
+//Sur le serv
 void Board::restoreFirstValue()
 {
 	old_x = fx;
 	old_y = fy;
 }
 
+//Sur le serv
 void Board::checkLeftCase(int& x, int& y, const int& callingMethod)
 {
 	if (userGridArray[old_x][old_y - N] == FILLED) {
@@ -254,6 +261,7 @@ void Board::checkLeftCase(int& x, int& y, const int& callingMethod)
 	}
 }
 
+//Sur le serv
 void Board::checkRightCase(int& x, int& y, const int& callingMethod)
 {
 	if (userGridArray[old_x][old_y + N] == FILLED) {
@@ -276,6 +284,7 @@ void Board::checkRightCase(int& x, int& y, const int& callingMethod)
 	}
 }
 
+//Sur le serv
 void  Board::checkUpCase(int& x, int& y, const int& callingMethod)
 {
 	if (userGridArray[old_x - N][old_y] == FILLED) {
@@ -297,6 +306,7 @@ void  Board::checkUpCase(int& x, int& y, const int& callingMethod)
 	}
 }
 
+//Sur le serv
 void Board::checkDownCase(int& x, int& y, const int& callingMethod)
 {
 	if (userGridArray[old_x + N][old_y] == FILLED) {
@@ -318,6 +328,7 @@ void Board::checkDownCase(int& x, int& y, const int& callingMethod)
 	}
 }
 
+//A enlever
 bool Board::checkComputerChoice(int& x, int& y)
 {
 	if (touched) {
@@ -356,12 +367,13 @@ bool Board::checkComputerChoice(int& x, int& y)
 	}
 	else { userGridArray[x][y] = PLAYED; axe = NONE; return true; }
 }
-
+//Sur le client
 void Board::drawText(sf::RenderWindow& win)
 {
 	win.draw(text);
 }
 
+//Sur le client
 void Board::draw(sf::RenderWindow& window)
 {
 	window.draw(background);

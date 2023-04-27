@@ -1,4 +1,4 @@
-
+//Sur le client
 class Boat
 {
 private:

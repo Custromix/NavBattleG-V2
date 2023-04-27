@@ -17,7 +17,7 @@ computerBoard::computerBoard() :TILESIZE(32), SENSOR_SIZE(28), EMPTY(0), FILLED(
 	computerStartPosition = 0;
 	computerBoatOrientation = 0;
 }
-
+//A faire sur le client 2
 void computerBoard::setComputerGrid()
 {
 	for (int line = 0; line < computerGridArray.size(); line++)
@@ -34,6 +34,7 @@ void computerBoard::setComputerGrid()
 	spawnBigBoats();
 }
 
+//A enlever
 void computerBoard::spawn()
 {
 	computerStartPosition = std::rand() % MAX_CASE;
@@ -105,6 +106,7 @@ void computerBoard::spawnBigBoats()
 	else { spawnBigBoats(); }
 }
 
+//A faire sur le client 2
 void computerBoard::readGridInfo(sf::RenderWindow& window, Boat& boat)
 {
 	for (int line = 0; line < computerGridArray.size(); line++)
@@ -132,6 +134,7 @@ void computerBoard::readGridInfo(sf::RenderWindow& window, Boat& boat)
 	}
 }
 
+//Sur le serveur
 bool computerBoard::checkCase(const int& startPosition, const int& orientation, const int& boatSize)
 {
 	for (int i = startPosition; i < startPosition + boatSize; i++)
@@ -212,6 +215,7 @@ void computerBoard::addBoxToSquare(sf::RenderWindow& win)
 	}
 }
 
+//Sur le client 
 bool computerBoard::gridEvent(sf::RenderWindow& win)
 {
 	for (int i = 0; i < computerGridSquare.size(); i++)
@@ -223,8 +227,6 @@ bool computerBoard::gridEvent(sf::RenderWindow& win)
 				isPressed = true;
 				hitBoat(i, FILLED);
 				cout << "Player 1  attack: " << cx << " " << cy << "\n"; //TODO Client 1 to serv
-				//computerGridSquare[i].width = 0;
-			//computerGridSquare[i].height = 0;	
 				return true;
 			}
 		}
@@ -236,12 +238,14 @@ bool computerBoard::gridEvent(sf::RenderWindow& win)
 	return false;
 }
 
+//Sur le serveur
 bool computerBoard::returnHitInformation()
 {
 	if (touched) return true;
 	else return false;
 }
 
+//Sur le serveur
 bool computerBoard::hitBoat(int& idx, const int& status)
 {
 	cx = 0;
@@ -272,7 +276,7 @@ bool computerBoard::hitBoat(int& idx, const int& status)
 	}
 	return touched;
 }
-
+//Sur le serv
 bool computerBoard::getBoatInfo()
 { // IF BOAT = 0 FUNCTION RETURN TRUE AND THE COMPUTER LOST
 	if (boat > 0)
@@ -283,13 +287,16 @@ bool computerBoard::getBoatInfo()
 	{
 		return true;
 	}
+	cout << "oui";
 }
+//A enlever
 void computerBoard::spawnChoice()
 {
 	choiceX = std::rand() % MAX_CASE;
 	choiceY = std::rand() % MAX_CASE;
 }
 
+//A enlever
 bool computerBoard::play(Board& board)
 {
 	spawnChoice();

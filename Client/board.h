@@ -1,5 +1,4 @@
 #pragma once
-
 class Boat;
 class computerBoard;
 
@@ -63,9 +62,11 @@ private:
 	std::vector<sf::FloatRect> gridSquare;
 	std::array<std::array<int, 10>, 10> userGridArray;
 public:
+	//Sur le client
 	Board();
 	void init();
 	void setUserGrid();
+
 	void readUserGridInfo(sf::RenderWindow&, Boat&);
 	void addSensorsToGrid();
 	void detectBoatOnGrid(Boat&);
