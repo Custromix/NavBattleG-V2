@@ -48,6 +48,13 @@ bool CClient::Connect(const char ip[], const char port[])
         WSACleanup();
     }
 
+    char buffedr[1024] = "CouCou serv !"; // la chaîne de caractères à envoyer
+    if (send(clientSocket, buffedr, strlen(buffedr), 0) != SOCKET_ERROR) {
+        std::cout << "Données envoyé : " << buffedr << std::endl;
+    }
+    else
+        std::cout << "Données pas envoyé : " << std::endl;
+
     return false;
 }
 

@@ -34,6 +34,8 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     try {
         Server* g_server = new Server(257523, hwnd);
 
+        g_server->SetSlot(2);
+
         g_server->Listen();
 
         /*g_server->Start();

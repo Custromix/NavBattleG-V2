@@ -134,7 +134,6 @@ bool Server::ProtocolExecuter(std::vector<std::string>* tokens)
 }
 
 
-
 std::string Server::ReceiveFromClient(SClient* emitter)
 {
     std::string buffer(1024, 0);
@@ -176,7 +175,10 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
             switch (WSAGETSELECTEVENT(lParam))
             {
                 case FD_ACCEPT:
-                {
+                {                            
+                    OutputDebugStringA("Client fff ! \n");
+
+
 
                     if (pServer->GetClients()->size() < pServer->GetSlot())
                     {
@@ -185,18 +187,21 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
                         }
                     }
 
+                    MessageBoxA(hwnd, "dada", "dad", NULL);
+
                     break;
                 }
                 case FD_READ:
                 {
 
-                    SClient* emitter = (SClient*)lParam;
-
                     std::string buffer(1024, 0);
-                    int num_bytes_received = recv(*emitter->GetSocket(), &buffer[0], buffer.size(), 0);
+                    int num_bytes_received = recv(wParam, &buffer[0], buffer.size(), 0);
 
                     if (num_bytes_received != SOCKET_ERROR)
                     {
+                        OutputDebugStringA("\n");
+                        OutputDebugStringA(buffer.c_str());
+                        OutputDebugStringA("\n");
                         pServer->ProtocolExecuter(pServer->Parser(buffer));
                     }
 
