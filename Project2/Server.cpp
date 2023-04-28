@@ -139,6 +139,7 @@ bool Server::ProtocolExecuter(std::vector<std::string>* tokens)
 void Server::SendToClient(SClient* receiver, std::string message)
 {
     if (send(*receiver->GetSocket(), message.c_str(), message.length(), 0)) {
+        OutputDebugStringA("SEND MESSAGE");
     }
     
 }
@@ -146,7 +147,6 @@ void Server::SendToClient(SClient* receiver, std::string message)
 
 LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    SOCKET Accept;
 
     switch (uMsg)
     {

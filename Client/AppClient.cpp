@@ -1,5 +1,7 @@
 #include "framework.h"
 
+LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     LPSTR lpCmdLine, int nCmdShow)
 {
@@ -8,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     WNDCLASS wc;
 
     wc.style = 0;
-    wc.lpfnWndProc = CClient::MainWndProc;
+    wc.lpfnWndProc = MainWndProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hinstance;
@@ -29,20 +31,11 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     UpdateWindow(hwnd);
 
 
-    // Allouer une console
-    AllocConsole();
-
-    // Rediriger la sortie standard vers la console
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-
-    std::cout << "Hello, world!" << std::endl;
 
     try {
         CClient* cli = new CClient(hwnd);
 
         cli->Connect("127.0.0.1", "27523");
-
-        cli->Main();
 
         //cli->Main();
 
@@ -54,9 +47,6 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     }
 
 
-    // Fermer la console
-    FreeConsole();
-
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
@@ -65,3 +55,88 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance,
     return msg.wParam;
 }
 /****************************************************************************/
+
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+
+    case WM_PAINT:
+    {
+        break;
+    }
+
+    case WM_SOCKET:
+    {
+
+        CClient* pClient = (CClient*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+
+        if (WSAGETSELECTERROR(lParam))
+        {
+            closesocket((SOCKET)wParam);
+            break;
+        }
+
+        // Determine what event occurred on the socket
+
+        switch (WSAGETSELECTEVENT(lParam))
+        {
+        case FD_READ:
+        {
+
+            std::string buffer(1024, 0);
+            int num_bytes_received = recv(wParam, &buffer[0], buffer.size(), 0);
+
+            if (num_bytes_received != SOCKET_ERROR)
+            {
+                OutputDebugStringA("\n");
+                OutputDebugStringA(buffer.c_str());
+                OutputDebugStringA("\n");
+                pClient->ProtocolExecuter(buffer);
+            }
+
+            // Receive data from the socket in wParam
+
+            break;
+        }
+        case FD_WRITE:
+        {
+
+            if (!pClient->pQMM->IsEmpty())
+            {
+                OutputDebugStringA("SEND MESSAGE \n");
+                std::string message = pClient->pQMM->DequeueMessage();
+                pClient->SendToServer(message);
+            }
+
+            // The socket in wParam is ready for sending data
+            break;
+
+        }
+        case FD_CLOSE:
+        {
+            // The connection is now closed
+
+            closesocket((SOCKET)wParam);
+
+            break;
+        }
+        }
+
+        break;
+    }
+    case WM_CLOSE:
+    {
+        DestroyWindow(hwnd);
+        return 0;
+    }
+    case WM_DESTROY:
+    {
+        PostQuitMessage(0);
+        return 0;
+    }
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+}

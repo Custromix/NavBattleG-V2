@@ -5,24 +5,27 @@ public:
 	CClient(HWND window);
 	~CClient();
 
-	void Stop();
-
 	bool Connect(const char ip[], const char port[]);
 
 	void SendToServer(std::string message);
 
-	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+	void sendMes();
 
 	void Main();
 
-private :
+	void ProtocolExecuter(std::string);
+
+	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+
+	QueueMessageManager* pQMM;
+
+private:
 	HWND window_;
 
 	WSADATA wsaData;
 	SOCKET clientSocket;
 
-	SOCKADDR_IN serverAddr;
+	
 
-	QueueMessageManager* pQMM;
 };
 
