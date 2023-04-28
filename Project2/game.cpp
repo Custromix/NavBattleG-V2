@@ -7,7 +7,6 @@ Game::Game() :USER(0), COMPUTER(1), STARTED(1)
 	secondHitPlayed = false;
 }
 
-//Sur le client
 bool Game::check(Board& board)
 {
 	if (board.getBoatInfo() == 13)
@@ -24,7 +23,7 @@ bool Game::check(Board& board)
 	return false;
 }
 
-//Sur le serveur
+
 void Game::start(sf::RenderWindow& win, Board& board, Boat& boat, computerBoard& cb)
 {
 	if (cb.getBoatInfo()) { board.messageBox(" COMPUTER    LOOSE"); }

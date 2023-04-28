@@ -31,7 +31,7 @@ public:
 
 	void SendToClient(SClient* receiver, std::string message);
 
-	bool ProtocolExecuter(std::vector<std::string> tokens);
+	bool ProtocolExecuter(std::vector<std::string>* tokens);
 
 	std::string ReceiveFromClient(SClient* receiver);
 

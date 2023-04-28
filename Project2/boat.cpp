@@ -1,5 +1,5 @@
 #include "Framework.h"
-//Sur le client
+
 Boat::Boat() : BOATCOUNT(4), HORIZONTAL(90), VERTICAL(180), MARGIN(50), STARTED(1)
 {
 	// SMALL / MEDIUM / BIG BOATS
@@ -61,11 +61,10 @@ void Boat::setStatus(bool value)
 	status = value;
 }
 
-//Sur le client
 void Boat::select(sf::RenderWindow& win, sf::Vector2i cursorPosition)
 {
 
-	for (int i = 0; i < boat.size(); i++) {
+	for (int i = 0;i < boat.size();i++) {
 		if (boat[i].sprite.getGlobalBounds().contains(cursorPosition.x, cursorPosition.y))
 		{
 
@@ -81,10 +80,10 @@ void Boat::select(sf::RenderWindow& win, sf::Vector2i cursorPosition)
 
 	}
 }
-//Sur le client
+
 void Boat::rotate(sf::Vector2i cursorPosition, sf::Event& event)
 {
-	for (int i = 0; i < boat.size(); i++) {
+	for (int i = 0;i < boat.size();i++) {
 		if (boat[i].sprite.getGlobalBounds().contains(cursorPosition.x, cursorPosition.y) &&
 			boat[i].rotation == "HORIZONTAL")
 		{
@@ -97,7 +96,6 @@ void Boat::rotate(sf::Vector2i cursorPosition, sf::Event& event)
 	}
 }
 
-//Sur le Client
 void Boat::move(sf::RenderWindow& win)
 {
 	sprite.setPosition(sf::Mouse::getPosition(win).x, sf::Mouse::getPosition(win).y);
@@ -115,7 +113,6 @@ bool Boat::checkPositionOnGrid(sf::FloatRect& gridSquare)
 	return false;
 }
 
-//Sur le client
 const sf::FloatRect Boat::getBoatPosition()
 {
 	for (int i = 0; i < boat.size(); i++)
@@ -123,7 +120,7 @@ const sf::FloatRect Boat::getBoatPosition()
 		return boat[i].sprite.getGlobalBounds();
 	}
 }
- //Sur le serv
+
 void Boat::missed(sf::RenderWindow& window, const int& positionX, const int& positionY)
 {
 	playedCase.setPosition(positionX, positionY);
@@ -133,7 +130,7 @@ void Boat::missed(sf::RenderWindow& window, const int& positionX, const int& pos
 void Boat::filled(sf::RenderWindow& window, const int& positionX, const int& positionY)
 {
 	filledCase.setPosition(positionX, positionY);
-	window.draw(filledCase);
+		window.draw(filledCase);
 }
 
 void Boat::destroyed(sf::RenderWindow& window, const int& positionX, const int& positionY)
@@ -142,12 +139,12 @@ void Boat::destroyed(sf::RenderWindow& window, const int& positionX, const int& 
 	window.draw(explosion);
 }
 
-//Sur le client
 void Boat::draw(sf::RenderWindow& window)
 {
 	for (int i = 0; i < boat.size(); i++)
 	{
 		window.draw(boat[i].sprite);
-	}	
+	}
+
 }
 
