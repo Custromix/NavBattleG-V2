@@ -205,7 +205,7 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 
                     if (num_bytes_received != SOCKET_ERROR)
                     {
-                        pServer->ProtocolExecuter(pServer->Parser(buffer));
+                        pServer->ProtocolExecuter(*pServer->Parser(buffer));
                     }
 
                     // Receive data from the socket in wParam
