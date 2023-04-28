@@ -10,7 +10,6 @@
 
 #include <SFML/Graphics.hpp>
 
-
 #include <iostream>
 #include <string>
 #include <winsock2.h>
