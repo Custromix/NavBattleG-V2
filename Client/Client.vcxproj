@@ -141,6 +141,7 @@
     <ClInclude Include="computer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="QueueMessageManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="targetver.h" />
@@ -154,6 +155,7 @@
     <ClCompile Include="CClient.cpp" />
     <ClCompile Include="computer.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="QueueMessageManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>

@@ -117,20 +117,88 @@ DWORD WINAPI Static_ThreadProc(LPVOID lpParameter) {
 
 /****************************************************************************/
 
-
-
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-    case WM_CREATE:
 
+    case WM_PAINT:
+    {
+        break;
+    }
+
+    case WM_SOCKET:
+    {
+
+        CClient* pClient = (CClient*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+
+        if (WSAGETSELECTERROR(lParam))
+        {
+            closesocket((SOCKET)wParam);
+            break;
+        }
+
+        // Determine what event occurred on the socket
+
+        switch (WSAGETSELECTEVENT(lParam))
+        {
+        case FD_READ:
+        {
+
+            std::string buffer(1024, 0);
+            int num_bytes_received = recv(wParam, &buffer[0], buffer.size(), 0);
+
+            if (num_bytes_received != SOCKET_ERROR)
+            {
+                OutputDebugStringA("\n");
+                OutputDebugStringA(buffer.c_str());
+                OutputDebugStringA("\n");
+                pClient->ProtocolExecuter(buffer);
+            }
+
+            // Receive data from the socket in wParam
+
+            break;
+        }
+        case FD_WRITE:
+        {
+            OutputDebugStringA("SEND MESSAGE \n");
+
+
+            if (!pClient->pQMM->IsEmpty())
+            {
+                OutputDebugStringA("SEND MESSAGE \n");
+                std::string message = pClient->pQMM->DequeueMessage();
+                pClient->SendToServer(message);
+            }
+
+            // The socket in wParam is ready for sending data
+            break;
+
+        }
+        case FD_CLOSE:
+        {
+            // The connection is now closed
+
+            closesocket((SOCKET)wParam);
+
+            break;
+        }
+        }
+
+        break;
+    }
+    case WM_CLOSE:
+    {
+        DestroyWindow(hwnd);
         return 0;
-
+    }
     case WM_DESTROY:
+    {
         PostQuitMessage(0);
         return 0;
-
+    }
     default:
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

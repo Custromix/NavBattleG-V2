@@ -24,6 +24,10 @@
 #include <map>
 #include <array>
 #include <timeapi.h>
+#include <Ws2tcpip.h>
+#include <conio.h>
+#include <queue>
+#include <mutex>
 
 
 #pragma comment(lib, "ws2_32.lib")
@@ -33,6 +37,7 @@
 using namespace sf;
 using namespace std;
 
+#include "QueueMessageManager.h"
 #include "CClient.h"
 
 #include "Scene.h"

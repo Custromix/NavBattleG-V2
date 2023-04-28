@@ -1,19 +1,28 @@
-#include "framework.h"
-#include <Ws2tcpip.h>
-#include <conio.h>
+ï»¿#include "framework.h"
+
+
+
 CClient::CClient(HWND window)
 {
     window_ = window;
+    pQMM = new QueueMessageManager();
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-        std::cout << "WSAStartup a échoué avec l'erreur : " << WSAGetLastError() << std::endl;
+        std::cout << "WSAStartup a ï¿½chouï¿½ avec l'erreur : " << WSAGetLastError() << std::endl;
     }
 
-    // Créer un socket
+    // Crï¿½er un socket
     clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (clientSocket == INVALID_SOCKET) {
-        std::cout << "Erreur de création du socket : " << WSAGetLastError() << std::endl;
+        std::cout << "Erreur de crï¿½ation du socket : " << WSAGetLastError() << std::endl;
     }
+
+
+
+}
+
+CClient::~CClient()
+{
 }
 
 bool CClient::Connect(const char ip[], const char port[])
@@ -27,9 +36,8 @@ bool CClient::Connect(const char ip[], const char port[])
 
     int status = getaddrinfo(ip, port, &hints, &result);
     if (status != 0) {
-        std::cout << "Impossible de résoudre l'adresse IP du serveur : " << gai_strerror(status) << std::endl;
-        closesocket(clientSocket);
-        WSACleanup();
+        std::cout << "Impossible de rï¿½soudre l'adresse IP du serveur : " << gai_strerror(status) << std::endl;
+
     }
 
     SOCKADDR_IN serverAddr;
@@ -40,70 +48,110 @@ bool CClient::Connect(const char ip[], const char port[])
     // Se connecter au serveur
     if (connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         std::cout << "Impossible de se connecter au serveur : " << WSAGetLastError() << std::endl;
-        closesocket(clientSocket);
-        WSACleanup();
+        OutputDebugStringA("PAS SEND BUFFER");
+
     }
+    else {
+        std::cout << "C'est bon !" << WSAGetLastError() << std::endl;
+    }
+
+    WSAAsyncSelect(clientSocket, window_, WM_SOCKET, FD_READ | FD_WRITE | FD_CLOSE);
+
+    SetWindowLongPtr(window_, GWLP_USERDATA, (LONG_PTR)this);
+
+    //OutputDebugStringA("SEND MESSAGE \n");
 
     return false;
 }
 
-void CClient::Main() 
+void CClient::SendToServer(std::string message)
 {
-    
-
-   
-
-    // Spécifier l'adresse du serveur
-    
-
-    // Envoyer la requête HTTP
-
-    char buffedr[1024] = "CouCou serv !"; // la chaîne de caractères à envoyer
-    if (send(clientSocket, buffedr, strlen(buffedr), 0) != SOCKET_ERROR) {
-        std::cout << "Données envoyé : " << buffedr << std::endl;
+    if (send(clientSocket, message.c_str(), message.length(), 0)) {
+        OutputDebugStringA("SEND MESSAGE");
     }
-    else
-        std::cout << "Données pas envoyé : " << std::endl;
+
+}
 
 
-    char key;
-    
+LRESULT CALLBACK CClient::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    SOCKET Accept;
 
-    do 
+    switch (uMsg)
     {
 
+    case WM_PAINT:
+    {
+        break;
+    }
 
-        if (WSAAsyncSelect(clientSocket, window_, WM_SOCKET, FD_READ) != SOCKET_ERROR)
+    case WM_SOCKET:
+    {
+
+        //CClient* pClient = (CClient*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        OutputDebugStringA("SEND MESSAGE");
+        if (WSAGETSELECTERROR(lParam))
         {
-            std::string buffer(1024, 0);
-            int num_bytes_received = recv(clientSocket, &buffer[0], buffer.size(), 0);
-            if (num_bytes_received == SOCKET_ERROR) {
-            }
-            
-            else {
-                std::cout << "Données reçues du serveur : " << buffer.substr(0, num_bytes_received) << std::endl;
-            }
-
+            closesocket((SOCKET)wParam);
+            break;
         }
 
-       
-        //if (GetAsyncKeyState('G') & 0x8000) {
-        //    char buffedr[1024] = "CouCou serv !"; // la chaîne de caractères à envoyer
-        //    if (send(clientSocket, buffedr, strlen(buffedr), 0) != SOCKET_ERROR) {
-        //        std::cout << "Données envoyé : " << buffedr << " : " << std::endl;
-        //    }
-        //    else
-        //        std::cout << "Données pas envoyé : " << std::endl;
+        // Determine what event occurred on the socket
 
-        //}
+        switch (WSAGETSELECTEVENT(lParam))
+        {
+        case FD_READ:
+        {
+            OutputDebugStringA("SEND MESSAGE");
+            /*std::string buffer(1024, 0);
+            int num_bytes_received = recv(wParam, &buffer[0], buffer.size(), 0);
 
+            if (num_bytes_received != SOCKET_ERROR)
+            {
+                OutputDebugStringA("\n");
+                OutputDebugStringA(buffer.c_str());
+                OutputDebugStringA("\n");
+                pServer->ProtocolExecuter(pServer->Parser(buffer));
+            }*/
 
-    } while (true);
+            // Receive data from the socket in wParam
 
-    // Fermer le socket et libérer les ressources Winsock
-    closesocket(clientSocket);
-    WSACleanup();
+            break;
+        }
+        case FD_CLOSE:
+        {
+            // The connection is now closed
+
+            closesocket((SOCKET)wParam);
+
+            break;
+        }
+        }
+
+        break;
+    }
+    case WM_CLOSE:
+    {
+        DestroyWindow(hwnd);
+        return 0;
+    }
+    case WM_DESTROY:
+    {
+        PostQuitMessage(0);
+        return 0;
+    }
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
 }
+
+void CClient::ProtocolExecuter(std::string)
+{
+}
+
+
+
+
 
 
 
