@@ -102,6 +102,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         case FD_WRITE:
         {
+            OutputDebugStringA("SEND MESSAGE \n");
+
 
             if (!pClient->pQMM->IsEmpty())
             {
