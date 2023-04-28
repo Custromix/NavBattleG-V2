@@ -18,3 +18,4 @@ public:
 	const char* getStatus();
 };
 
+

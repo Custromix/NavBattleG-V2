@@ -63,11 +63,9 @@ private:
 	std::array<std::array<int, 10>, 10> userGridArray;
 	std::string griddata;
 public:
-	//Sur le client
 	Board();
 	void init();
 	void setUserGrid();
-
 	void readUserGridInfo(sf::RenderWindow&, Boat&);
 	void addSensorsToGrid();
 	void detectBoatOnGrid(Boat&);
@@ -87,4 +85,5 @@ public:
 	void drawText(sf::RenderWindow&);
 	void draw(sf::RenderWindow&);
 };
+
 

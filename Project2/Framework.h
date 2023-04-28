@@ -1,3 +1,7 @@
+// header.h : fichier Include pour les fichiers Include système standard,
+// ou les fichiers Include spécifiques aux projets
+//
+
 #pragma once
 
 #include "targetver.h"
@@ -5,6 +9,8 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #include <SFML/Graphics.hpp>
+
+
 #include <iostream>
 #include <string>
 #include <winsock2.h>
@@ -13,18 +19,24 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <sstream>
 #include <vector>
-#include <array>
 #include <algorithm>
 #include <map>
+#include <array>
 #include <timeapi.h>
+
 
 #pragma comment(lib, "ws2_32.lib")
 
 #define WM_SOCKET (WM_USER + 1)
 
-#include "SCResult.h"
-#include "SClient.h"
-#include "GameManager.h"
-#include "Server.h"
+using namespace sf;
+using namespace std;
+
+#include "computer.h"
+#include "board.h"
+#include "boat.h"
+#include "game.h"
+
+
+

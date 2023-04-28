@@ -9,7 +9,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #include <SFML/Graphics.hpp>
-#include <windows.h>
+
 
 #include <iostream>
 #include <string>

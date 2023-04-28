@@ -36,3 +36,4 @@ private:
 	int m_state;
 };
 
+

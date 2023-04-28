@@ -59,3 +59,4 @@ public:
 	void drawPlayedCase(sf::RenderWindow&, const int&, const int&);
 };
 
+

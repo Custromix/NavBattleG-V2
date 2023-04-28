@@ -287,7 +287,6 @@ bool computerBoard::getBoatInfo()
 	{
 		return true;
 	}
-	cout << "oui";
 }
 //A enlever
 void computerBoard::spawnChoice()

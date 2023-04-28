@@ -309,6 +309,7 @@ void  Board::checkUpCase(int& x, int& y, const int& callingMethod)
 			checkLeftCase(x, y, UP);
 		}
 	}
+
 }
 
 //Sur le serv
