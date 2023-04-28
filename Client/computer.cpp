@@ -17,7 +17,7 @@ computerBoard::computerBoard() :TILESIZE(32), SENSOR_SIZE(28), EMPTY(0), FILLED(
 	computerStartPosition = 0;
 	computerBoatOrientation = 0;
 }
-
+//A faire sur le client 2
 void computerBoard::setComputerGrid()
 {
 	for (int line = 0; line < computerGridArray.size(); line++)
@@ -34,6 +34,7 @@ void computerBoard::setComputerGrid()
 	spawnBigBoats();
 }
 
+//A enlever
 void computerBoard::spawn()
 {
 	computerStartPosition = std::rand() % MAX_CASE;
@@ -48,7 +49,7 @@ void computerBoard::spawnSmallBoats()
 	checkBoatLength(computerStartPosition, computerBoatOrientation, SMALL_BOAT_SIZE);
 	if (!checkCase(computerStartPosition, computerBoatOrientation, SMALL_BOAT_SIZE))
 	{
-		for (int i = 0; i < SMALL_BOAT_SIZE;i++)
+		for (int i = 0; i < SMALL_BOAT_SIZE; i++)
 		{
 			if (computerBoatOrientation == HORIZONTAL)
 				fillGrid(computerBoatOrientation, computerStartPosition,
@@ -70,7 +71,7 @@ void computerBoard::spawnMediumBoats()
 	// 2 X MEDIUM
 	if (!checkCase(computerStartPosition, computerBoatOrientation, MEDIUM_BOAT_SIZE))
 	{
-		for (int i = 0; i < MEDIUM_BOAT_SIZE;i++)
+		for (int i = 0; i < MEDIUM_BOAT_SIZE; i++)
 		{
 			if (computerBoatOrientation == HORIZONTAL)
 
@@ -105,6 +106,7 @@ void computerBoard::spawnBigBoats()
 	else { spawnBigBoats(); }
 }
 
+//A faire sur le client 2
 void computerBoard::readGridInfo(sf::RenderWindow& window, Boat& boat)
 {
 	for (int line = 0; line < computerGridArray.size(); line++)
@@ -132,9 +134,10 @@ void computerBoard::readGridInfo(sf::RenderWindow& window, Boat& boat)
 	}
 }
 
+//Sur le serveur
 bool computerBoard::checkCase(const int& startPosition, const int& orientation, const int& boatSize)
 {
-	for (int i = startPosition; i < startPosition + boatSize;i++)
+	for (int i = startPosition; i < startPosition + boatSize; i++)
 	{
 		if (orientation == HORIZONTAL)
 		{
@@ -156,7 +159,6 @@ bool computerBoard::checkCase(const int& startPosition, const int& orientation, 
 
 void computerBoard::checkBoatLength(const int& startCase, const int& orientation, const int& length)
 {
-
 	// THE BOAT CAN BE LOCATED ON THE HORIZONTAL POSITION
 	if (computerBoatOrientation == HORIZONTAL) {
 		if (computerStartPosition + length >= MAX_CASE)
@@ -213,6 +215,7 @@ void computerBoard::addBoxToSquare(sf::RenderWindow& win)
 	}
 }
 
+//Sur le client 
 bool computerBoard::gridEvent(sf::RenderWindow& win)
 {
 	for (int i = 0; i < computerGridSquare.size(); i++)
@@ -223,8 +226,7 @@ bool computerBoard::gridEvent(sf::RenderWindow& win)
 			{
 				isPressed = true;
 				hitBoat(i, FILLED);
-				//computerGridSquare[i].width = 0;
-			//computerGridSquare[i].height = 0;	
+				cout << "Player 1  attack: " << cx << " " << cy << "\n"; //TODO Client 1 to serv
 				return true;
 			}
 		}
@@ -234,15 +236,16 @@ bool computerBoard::gridEvent(sf::RenderWindow& win)
 		}
 	}
 	return false;
-
 }
 
+//Sur le serveur
 bool computerBoard::returnHitInformation()
 {
 	if (touched) return true;
 	else return false;
 }
 
+//Sur le serveur
 bool computerBoard::hitBoat(int& idx, const int& status)
 {
 	cx = 0;
@@ -263,9 +266,17 @@ bool computerBoard::hitBoat(int& idx, const int& status)
 		computerGridArray[cx][cy] = MISSED;
 		touched = false;
 	}
+	if (touched == false)
+	{
+		cout << "Player 1 miss \n"; //TODO serv to client 2
+	}
+	else
+	{
+		cout << "Player 1 touched \n";  //TODO serv to client 2
+	}
 	return touched;
 }
-
+//Sur le serv
 bool computerBoard::getBoatInfo()
 { // IF BOAT = 0 FUNCTION RETURN TRUE AND THE COMPUTER LOST
 	if (boat > 0)
@@ -277,12 +288,14 @@ bool computerBoard::getBoatInfo()
 		return true;
 	}
 }
+//A enlever
 void computerBoard::spawnChoice()
 {
 	choiceX = std::rand() % MAX_CASE;
 	choiceY = std::rand() % MAX_CASE;
 }
 
+//A enlever
 bool computerBoard::play(Board& board)
 {
 	spawnChoice();

@@ -4,6 +4,7 @@
 #define WIN32_LEAN_AND_MEAN    
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
 #include <winsock2.h>
@@ -19,6 +20,7 @@
 #include <map>
 #include <queue>
 #include <mutex>
+#include <timeapi.h>
 
 #pragma comment(lib, "ws2_32.lib")
 

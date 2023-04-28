@@ -21,10 +21,6 @@ CClient::CClient(HWND window)
 
 }
 
-CClient::~CClient()
-{
-}
-
 bool CClient::Connect(const char ip[], const char port[])
 {
     struct addrinfo* result = NULL;

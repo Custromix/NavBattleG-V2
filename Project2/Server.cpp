@@ -129,10 +129,18 @@ std::vector<std::string>* Server::Parser(std::string ProtocolMessage)
 
 }
 
-bool Server::ProtocolExecuter(std::vector<std::string>* tokens)
+bool Server::ProtocolExecuter(std::vector<std::string> tokens)
 {
     pQMM->EnqueueMessage("MISS", clients[0]);
 
+    if (tokens[0] == "SetUp")
+    {
+        pGame->parserSetup(tokens[1]);
+    }
+    else if ("Attack")
+    {
+        pGame->parserAttack(tokens[1]);
+    }
     return false;
 }
 
