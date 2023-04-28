@@ -397,3 +397,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Client/Client.vcxproj
+Client/Client.vcxproj
+Project2/Project2.vcxproj
