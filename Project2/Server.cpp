@@ -194,7 +194,6 @@ LRESULT CALLBACK Server::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
                         OutputDebugStringA(buffer.c_str());
                         OutputDebugStringA("\n");
                         pServer->ProtocolExecuter(pServer->Parser(buffer));
-                        pServer->ProtocolExecuter(*pServer->Parser(buffer));
                     }
 
                     // Receive data from the socket in wParam
